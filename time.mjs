@@ -20,8 +20,8 @@ export async function timesPopulate() {
     // shape_dist_traveled: number;  
     // timepoint: number;
 
-    times.forEach(async (time) => {
-        const newTime = {
+    times.map((time) => {
+        return JSON.stringify({
             ...time,
             stop_sequence: Number(time.stop_sequence),
             pickup_type: Number(time.pickup_type),
@@ -30,14 +30,19 @@ export async function timesPopulate() {
             continuous_drop_off: Number(time.continuous_drop_off),
             shape_dist_traveled: Number(time.shape_dist_traveled),
             timepoint: Number(time.timepoint),
-        }
+        })
+    })
 
+    const chunkSize = 500;
+    for (let i = 0; i < times.length / chunkSize; ++i) {
         await fetch(`http:/127.0.0.1:3000/times/${AGENCY}`, {
             method: 'PUT',
-            headers: { 'Content-type': 'application/json' },
-            body: JSON.stringify(newTime),
+            headers: { 'Content-type': 'application/json', 'data-type': 'json' },
+            body: JSON.stringify(times.slice(i * chunkSize, Math.min((i + 1) * chunkSize), times.length)),
         });
-    })
+        await new Promise(r => setTimeout(r, 100));
+        console.log(`Chunk #${i}`)
+    }
 }
 
 await timesPopulate();

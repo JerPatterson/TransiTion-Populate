@@ -25,8 +25,8 @@ export async function stopPopulate() {
     // stop_shelter: boolean;  
     // stop_display: boolean;
 
-    stops.forEach(async (stop) => {
-        const newStop = {
+    stops.map((stop) => {
+        return {
             ...stop,
             stop_lat: Number(stop.stop_lat),
             stop_lon: Number(stop.stop_lon),
@@ -34,16 +34,19 @@ export async function stopPopulate() {
             wheelchair_boarding: Number(stop.wheelchair_boarding),
             stop_shelter: Boolean(stop.stop_abribus),
             stop_display: Boolean(stop.stop_display),
-        }
+        };
+    });
 
-        const response = await fetch(`http:/127.0.0.1:3000/stops/${AGENCY}`, {
+    const chunkSize = 500;
+    for (let i = 0; i < stops.length / chunkSize; ++i) {
+        await fetch(`http:/127.0.0.1:3000/stops/${AGENCY}`, {
             method: 'PUT',
-            headers: { 'Content-type': 'application/json' },
-            body: JSON.stringify(newStop)
+            headers: { 'Content-type': 'application/json', 'data-type': 'json' },
+            body: JSON.stringify(stops.slice(i * chunkSize, Math.min((i + 1) * chunkSize), trips.length)),
         });
-
-        console.log(response.status);
-    })
+        await new Promise(r => setTimeout(r, 100));
+        console.log(`Chunk #${i}`)
+    }
 }
 
 await stopPopulate();
