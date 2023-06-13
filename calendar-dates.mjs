@@ -19,7 +19,7 @@ export async function routePopulate() {
             exception_type: Number(elem.exception_type),
         }
 
-        const response = await fetch(`http:/127.0.0.1:3000/routes/${AGENCY}`, {
+        const response = await fetch(`http:/127.0.0.1:3000/services/calendar/dates/${AGENCY}`, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json' },
             body: JSON.stringify(newCalendarDate),
