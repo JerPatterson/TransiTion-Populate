@@ -24,6 +24,7 @@ export async function routePopulate() {
     routes.forEach(async (route) => {
         const newRoute = {
             ...route,
+            route_id: route.route_id.replace('MARS23', ''),
             route_type: Number(route.route_type),
             route_sort_order: Number(route.route_sort_order),
             continuous_pickup: Number(route.continuous_pickup),

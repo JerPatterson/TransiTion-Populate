@@ -4,7 +4,7 @@ import { readFile } from './file.mjs';
 const AGENCY = 'stl';
 
 export async function routePopulate() {
-    const calendarDates = await readFile("./assets/calendar-dates.txt", "service_id");
+    const calendarDates = await readFile("./assets/calendar_dates.txt", "service_id");
     calendarDates.pop();
 
     // agency_id: string;
@@ -15,7 +15,7 @@ export async function routePopulate() {
     calendarDates.forEach(async (elem) => {
         const newCalendarDate = {
             ...elem,
-            date: new Date(elem.date.slice(0, 4), Number(elem.date.slice(4, 6)) - 1, elem.date.slice(6)),
+            date: new Date(elem.date.slice(0, 4), Number(elem.date.slice(4, 6)) - 1, elem.date.slice(6)).getTime(),
             exception_type: Number(elem.exception_type),
         }
 

@@ -4,7 +4,7 @@ import { readFile } from './file.mjs';
 const AGENCY = 'stl';
 
 export async function stopPopulate() {
-    const stops = await readFile("./assets/stops.txt", "stop_id");
+    let stops = await readFile("./assets/stops.txt", "stop_id");
     stops.pop();
 
     // agency_id: string;  
@@ -25,9 +25,10 @@ export async function stopPopulate() {
     // stop_shelter: boolean;  
     // stop_display: boolean;
 
-    stops.map((stop) => {
+    stops = stops.map((stop) => {
         return {
             ...stop,
+            stop_id: stop.stop_id.replace('MARS23', '').replace('CP', ''),
             stop_lat: Number(stop.stop_lat),
             stop_lon: Number(stop.stop_lon),
             location_type: Number(stop.location_type),
@@ -37,15 +38,18 @@ export async function stopPopulate() {
         };
     });
 
-    const chunkSize = 500;
+    stops = stops.filter((stop, i) => i > 0 ? stop.stop_code !== stops[i - 1].stop_code : true);
+
+    const chunkSize = 200;
     for (let i = 0; i < stops.length / chunkSize; ++i) {
-        await fetch(`http:/127.0.0.1:3000/stops/${AGENCY}`, {
+        const response = await fetch(`http:/127.0.0.1:3000/stops/${AGENCY}`, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json', 'data-type': 'json' },
-            body: JSON.stringify(stops.slice(i * chunkSize, Math.min((i + 1) * chunkSize), trips.length)),
+            body: JSON.stringify(stops.slice(i * chunkSize, Math.min((i + 1) * chunkSize), stops.length)),
         });
         await new Promise(r => setTimeout(r, 100));
-        console.log(`Chunk #${i}`)
+        console.log(`Chunk #${i}`);
+        console.log(response.status);
     }
 }
 

@@ -22,15 +22,15 @@ export async function calendarPopulate() {
     calendar.forEach(async (elem) => {
         const newCalendar = {
             ...elem,
-            monday: Boolean(elem.monday),
-            tuesday: Boolean(elem.tuesday),
-            wednesday: Boolean(elem.wednesday),
-            thursday: Boolean(elem.thursday),
-            friday: Boolean(elem.friday),
-            saturday: Boolean(elem.saturday),
-            sunday: Boolean(elem.sunday),
-            start_date: new Date(elem.start_date.slice(0, 4), Number(elem.start_date.slice(4, 6)) - 1, elem.start_date.slice(6)),
-            end_date: new Date(elem.end_date.slice(0, 4), Number(elem.end_date.slice(4, 6)) - 1, elem.end_date.slice(6)),
+            monday: elem.monday === '1',
+            tuesday: elem.tuesday === '1',
+            wednesday: elem.wednesday === '1',
+            thursday: elem.thursday === '1',
+            friday: elem.friday === '1',
+            saturday: elem.saturday === '1',
+            sunday: elem.sunday === '1',
+            start_date: new Date(elem.start_date.slice(0, 4), Number(elem.start_date.slice(4, 6)) - 1, elem.start_date.slice(6)).getTime(),
+            end_date: new Date(elem.end_date.slice(0, 4), Number(elem.end_date.slice(4, 6)) - 1, elem.end_date.slice(6)).getTime(),
         }
 
         const response = await fetch(`http:/127.0.0.1:3000/services/calendar/${AGENCY}`, {
