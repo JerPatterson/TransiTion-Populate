@@ -34,7 +34,7 @@ export async function timesPopulate() {
     });
 
     const chunkSize = 200;
-    for (let i = 5160; i < times.length / chunkSize; ++i) {
+    for (let i = 0; i < times.length / chunkSize; ++i) {
         const response = await fetch(`http:/127.0.0.1:3000/times/${AGENCY}`, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json', 'data-type': 'json' },
