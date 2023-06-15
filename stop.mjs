@@ -33,8 +33,8 @@ export async function stopPopulate() {
             stop_lon: Number(stop.stop_lon),
             location_type: Number(stop.location_type),
             wheelchair_boarding: Number(stop.wheelchair_boarding),
-            stop_shelter: Boolean(stop.stop_abribus),
-            stop_display: Boolean(stop.stop_display),
+            stop_shelter: stop.stop_abribus === '1',
+            stop_display: stop.stop_display === '1',
         };
     });
 

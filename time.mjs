@@ -23,7 +23,6 @@ export async function timesPopulate() {
     times = times.map((time) => {
         return {
             ...time,
-            trip_id: time.trip_id.replace('MARS23', ''),
             stop_id: time.stop_id.replace('MARS23', '').replace('CP', ''),
             stop_sequence: Number(time.stop_sequence),
             pickup_type: Number(time.pickup_type),
@@ -36,7 +35,7 @@ export async function timesPopulate() {
     });
 
     const chunkSize = 200;
-    for (let i = 284; i < times.length / chunkSize; ++i) {
+    for (let i = 0; i < times.length / chunkSize; ++i) {
         const response = await fetch(`http:/127.0.0.1:3000/times/${AGENCY}`, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json', 'data-type': 'json' },

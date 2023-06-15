@@ -16,8 +16,8 @@ export async function shapePopulate() {
     shapes = shapes.map((elem) => {
         return {
             shape_id: elem.shape_id.replace('MARS23', ''),
-            shape_pt_lat: Number(elem.shape_pt_lat),
-            shape_pt_lon: Number(elem.shape_pt_lon),
+            shape_pt_lat: parseFloat(elem.shape_pt_lat),
+            shape_pt_lon: parseFloat(elem.shape_pt_lon),
             shape_pt_sequence: Number(elem.shape_pt_sequence),
             shape_dist_traveled: Number(elem.shape_dist_traveled),
         }

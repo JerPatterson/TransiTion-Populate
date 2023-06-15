@@ -29,7 +29,8 @@ export async function routePopulate() {
             route_sort_order: Number(route.route_sort_order),
             continuous_pickup: Number(route.continuous_pickup),
             continuous_drop_off: Number(route.continuous_drop_off),
-            wheelchair_boarding: Number(route.wheelchair_boarding),
+            wheelchair_boarding: route.wheelchair_boarding === '1' ? 1 : 2,
+            night_only: route.night === '1',
         }
 
         const response = await fetch(`http:/127.0.0.1:3000/routes/${AGENCY}`, {

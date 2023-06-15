@@ -22,7 +22,6 @@ export async function stopPopulate() {
         return {
             ...trip,
             route_id: trip.route_id.replace('MARS23', ''),
-            trip_id: trip.trip_id.replace('MARS23', ''),
             shape_id: trip.shape_id.replace('MARS23', ''),
             direction_id: Number(trip.direction_id),
             wheelchair_accessible: Number(trip.wheelchair_boarding),
