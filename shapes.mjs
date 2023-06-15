@@ -1,7 +1,6 @@
 import fetch from 'node-fetch'
 import { readFile } from './file.mjs';
-
-const AGENCY = 'stl';
+import { AGENCY } from './agency_specific.const.mjs'
 
 export async function shapePopulate() {
     let shapes = await readFile("./assets/shapes.txt", "shape_id");

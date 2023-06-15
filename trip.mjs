@@ -1,7 +1,6 @@
 import fetch from 'node-fetch'
 import { readFile } from './file.mjs';
-
-const AGENCY = 'stl';
+import { AGENCY } from './agency_specific.const.mjs'
 
 export async function stopPopulate() {
     let trips = await readFile("./assets/trips.txt", "route_id");
@@ -21,8 +20,8 @@ export async function stopPopulate() {
     trips = trips.map((trip) => {
         return {
             ...trip,
-            route_id: trip.route_id.replace('MARS23', ''),
-            shape_id: trip.shape_id.replace('MARS23', ''),
+            route_id: trip.route_id.replace('JUIN23', ''),
+            shape_id: trip.shape_id.replace('JUIN23', ''),
             direction_id: Number(trip.direction_id),
             wheelchair_accessible: Number(trip.wheelchair_boarding),
             bikes_allowed: Number(trip.bikes_allowed),

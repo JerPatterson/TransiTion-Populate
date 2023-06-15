@@ -1,7 +1,6 @@
 import fetch from 'node-fetch'
 import { readFile } from './file.mjs';
-
-const AGENCY = 'stl';
+import { AGENCY } from './agency_specific.const.mjs'
 
 export async function timesPopulate() {
     let times = await readFile("./assets/stop_times.txt", "trip_id");
@@ -23,7 +22,7 @@ export async function timesPopulate() {
     times = times.map((time) => {
         return {
             ...time,
-            stop_id: time.stop_id.replace('MARS23', '').replace('CP', ''),
+            stop_id: time.stop_id.replace('JUIN23', '').replace('CP', ''),
             stop_sequence: Number(time.stop_sequence),
             pickup_type: Number(time.pickup_type),
             drop_off_type: Number(time.drop_off_type),
@@ -35,7 +34,7 @@ export async function timesPopulate() {
     });
 
     const chunkSize = 200;
-    for (let i = 0; i < times.length / chunkSize; ++i) {
+    for (let i = 5160; i < times.length / chunkSize; ++i) {
         const response = await fetch(`http:/127.0.0.1:3000/times/${AGENCY}`, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json', 'data-type': 'json' },

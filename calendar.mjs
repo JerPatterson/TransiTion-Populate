@@ -1,7 +1,6 @@
 import fetch from 'node-fetch'
 import { readFile } from './file.mjs';
-
-const AGENCY = 'stl';
+import { AGENCY } from './agency_specific.const.mjs'
 
 export async function calendarPopulate() {
     const calendar = await readFile("./assets/calendar.txt", "service_id");
@@ -32,6 +31,8 @@ export async function calendarPopulate() {
             start_date: new Date(elem.start_date.slice(0, 4), Number(elem.start_date.slice(4, 6)) - 1, elem.start_date.slice(6)).getTime(),
             end_date: new Date(elem.end_date.slice(0, 4), Number(elem.end_date.slice(4, 6)) - 1, elem.end_date.slice(6)).getTime(),
         }
+
+        console.log(newCalendar);
 
         const response = await fetch(`http:/127.0.0.1:3000/services/calendar/${AGENCY}`, {
             method: 'PUT',
