@@ -28,14 +28,14 @@ export async function stopPopulate() {
         }
     });
 
-    const chunkSize = 200;
+    const chunkSize = 10000;
     for (let i = 0; i < trips.length / chunkSize; ++i) {
         const response = await fetch(`http:/127.0.0.1:3000/trips/${AGENCY}`, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json', 'data-type': 'json' },
             body: JSON.stringify(trips.slice(i * chunkSize, Math.min((i + 1) * chunkSize), trips.length)),
         });
-        await new Promise(r => setTimeout(r, 100));
+        await new Promise(r => setTimeout(r, 1000));
         console.log(`Chunk #${i}`);
         console.log(response.status);
     }

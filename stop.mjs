@@ -27,7 +27,7 @@ export async function stopPopulate() {
     stops = stops.map((stop) => {
         return {
             ...stop,
-            stop_id: stop.stop_id.replace('MARS23', '').replace('CP', ''),
+            stop_id: stop.stop_id.replace('JUIN23', '').replace('CP', ''),
             stop_lat: Number(stop.stop_lat),
             stop_lon: Number(stop.stop_lon),
             location_type: Number(stop.location_type),
@@ -39,14 +39,14 @@ export async function stopPopulate() {
 
     stops = stops.filter((stop, i) => i > 0 ? stop.stop_code !== stops[i - 1].stop_code : true);
 
-    const chunkSize = 200;
+    const chunkSize = 10000;
     for (let i = 0; i < stops.length / chunkSize; ++i) {
         const response = await fetch(`http:/127.0.0.1:3000/stops/${AGENCY}`, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json', 'data-type': 'json' },
             body: JSON.stringify(stops.slice(i * chunkSize, Math.min((i + 1) * chunkSize), stops.length)),
         });
-        await new Promise(r => setTimeout(r, 100));
+        await new Promise(r => setTimeout(r, 1000));
         console.log(`Chunk #${i}`);
         console.log(response.status);
     }

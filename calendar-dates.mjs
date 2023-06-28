@@ -1,7 +1,6 @@
 import fetch from 'node-fetch'
 import { readFile } from './file.mjs';
-
-const AGENCY = 'stm';
+import { AGENCY } from './agency_specific.const.mjs'
 
 export async function routePopulate() {
     const calendarDates = await readFile("./assets/calendar_dates.txt", "service_id");

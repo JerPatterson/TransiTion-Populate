@@ -15,7 +15,7 @@ export async function agencyPopulate() {
         });
 
         console.log(response.status);
-    })
+    });
 }
 
 await agencyPopulate();

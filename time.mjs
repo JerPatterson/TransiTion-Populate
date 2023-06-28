@@ -22,6 +22,7 @@ export async function timesPopulate() {
     times = times.map((time) => {
         return {
             ...time,
+            agency_id: AGENCY,
             stop_id: time.stop_id.replace('JUIN23', '').replace('CP', ''),
             stop_sequence: Number(time.stop_sequence),
             pickup_type: Number(time.pickup_type),
@@ -33,14 +34,14 @@ export async function timesPopulate() {
         };
     });
 
-    const chunkSize = 200;
+    const chunkSize = 10000;
     for (let i = 0; i < times.length / chunkSize; ++i) {
         const response = await fetch(`http:/127.0.0.1:3000/times/${AGENCY}`, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json', 'data-type': 'json' },
             body: JSON.stringify(times.slice(i * chunkSize, Math.min((i + 1) * chunkSize), times.length)),
         });
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 1000));
         console.log(`Chunk #${i}`);
         console.log(response.status);
     }

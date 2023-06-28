@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const LINE_DELIMITER = '\n';
+const LINE_DELIMITER = '\r\n';
 const VALUE_DELIMITER = ',';
 
 export async function readFile(path, firstParam) {
