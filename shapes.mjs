@@ -14,6 +14,7 @@ export async function shapePopulate() {
 
     shapes = shapes.map((elem) => {
         return {
+            agency_id: AGENCY,
             shape_id: elem.shape_id.replace('JUIN23', ''),
             shape_pt_lat: parseFloat(elem.shape_pt_lat),
             shape_pt_lon: parseFloat(elem.shape_pt_lon),
@@ -22,14 +23,14 @@ export async function shapePopulate() {
         }
     });
 
-    const chunkSize = 10000;
+    const chunkSize = 500;
     for (let i = 0; i < shapes.length / chunkSize; ++i) {
         const response = await fetch(`http:/127.0.0.1:3000/shapes/${AGENCY}`, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json', 'data-type': 'json' },
             body: JSON.stringify(shapes.slice(i * chunkSize, Math.min((i + 1) * chunkSize), shapes.length)),
         });
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, 200));
         console.log(`Chunk #${i}`);
         console.log(response.status);
     }

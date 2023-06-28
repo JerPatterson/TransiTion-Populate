@@ -20,6 +20,7 @@ export async function stopPopulate() {
     trips = trips.map((trip) => {
         return {
             ...trip,
+            agency_id: AGENCY,
             route_id: trip.route_id.replace('JUIN23', ''),
             shape_id: trip.shape_id.replace('JUIN23', ''),
             direction_id: Number(trip.direction_id),
@@ -28,14 +29,14 @@ export async function stopPopulate() {
         }
     });
 
-    const chunkSize = 10000;
+    const chunkSize = 300;
     for (let i = 0; i < trips.length / chunkSize; ++i) {
         const response = await fetch(`http:/127.0.0.1:3000/trips/${AGENCY}`, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json', 'data-type': 'json' },
             body: JSON.stringify(trips.slice(i * chunkSize, Math.min((i + 1) * chunkSize), trips.length)),
         });
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, 200));
         console.log(`Chunk #${i}`);
         console.log(response.status);
     }

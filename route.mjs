@@ -28,7 +28,7 @@ export async function routePopulate() {
             route_sort_order: Number(route.route_sort_order),
             continuous_pickup: Number(route.continuous_pickup),
             continuous_drop_off: Number(route.continuous_drop_off),
-            night_only: route.route_id === 'JUIN232E' || route.route_id === 'JUIN232O',
+            night_only: route.route_id[0] === '3' && route.route_id.length === 3,
         }
 
         // console.log(newRoute);
@@ -40,7 +40,7 @@ export async function routePopulate() {
         });
 
         console.log(response.status);
-    })
+    });
 }
 
 await routePopulate();
