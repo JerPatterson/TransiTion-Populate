@@ -2,8 +2,8 @@ import fs from 'fs';
 import { AGENCY_ID, LINE_DELIMITER, VALUE_DELIMITER } from './constants.mjs';
 
 export class GTFSFileParser {
-    async getContent(fileDirectory, lineFirstParam) {
-        return this.#readFile(fileDirectory, lineFirstParam);
+    async getContent(fileDirectory) {
+        return this.#readFile(fileDirectory);
     }
     
 
@@ -39,7 +39,7 @@ export class GTFSFileParser {
                 return 'route_id';
             case 'shapes.txt':
                 return 'shape_id';
-            case 'stop_times':
+            case 'stop_times.txt':
                 return 'trip_id';
             case 'stops.txt':
                 return 'stop_id';
@@ -97,7 +97,7 @@ export class GTFSFileParser {
                     shape_pt_sequence: Number(object.shape_pt_sequence),
                     shape_dist_traveled: parseFloat(object.shape_dist_traveled),
                 };
-            case 'stop_times':
+            case 'stop_times.txt':
                 return {
                     ...object,
                     agency_id: AGENCY_ID,
