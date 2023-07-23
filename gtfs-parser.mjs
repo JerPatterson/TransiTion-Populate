@@ -1,11 +1,10 @@
 import fs from 'fs';
 import { AGENCY_ID, LINE_DELIMITER, VALUE_DELIMITER } from './constants.mjs';
 
-export class GTFSFileParser {
+export class GTFSParser {
     async getContent(fileDirectory) {
         return this.#readFile(fileDirectory);
-    }
-    
+    } 
 
     async #readFile(path) {
         const content = fs.readFileSync(path).toLocaleString();

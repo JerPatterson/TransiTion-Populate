@@ -1,9 +1,9 @@
 import fetch from "node-fetch";
 import { AGENCY_ID } from "./constants.mjs";
-import { GTFSFileParser } from "./gtfs-parser.mjs";
+import { GTFSParser } from "./gtfs-parser.mjs";
 
 export class GTFSFiller {
-    #fileParser = new GTFSFileParser();
+    #fileParser = new GTFSParser();
     #baseFilePath = `./assets/${AGENCY_ID}`;
     #serverURL = 'http://127.0.0.1:3000';
 
@@ -86,5 +86,3 @@ export class GTFSFiller {
         return new Promise(r => setTimeout(r, 200));
     }
 }
-
-await new GTFSFiller().sendAgencies();
