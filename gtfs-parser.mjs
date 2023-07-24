@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { GTFSConverter } from './converter.mjs';
 import { AGENCY_ID, LINE_DELIMITER, VALUE_DELIMITER } from './constants.mjs';
 
 export class GTFSParser {
@@ -15,15 +16,17 @@ export class GTFSParser {
 
         params[0] = this.#getFirstParamFromFile(path);
 
-        return values.map((value) => {
+        const valuesFormatted = values.map((value) => {
             const result = Object();
             const attributes = value.split(VALUE_DELIMITER);
             attributes.forEach((value, index) => {
                 result[params[index]] = value;
             });
 
-            return this.#formatAttributesTypes(path, result);
+            return this.#formatAttributes(path, result);
         });
+
+        return this.#convertAttributes(path, valuesFormatted);
     }
 
     #getFirstParamFromFile(path) {
@@ -47,7 +50,7 @@ export class GTFSParser {
         }
     }
 
-    #formatAttributesTypes(path, object) {
+    #formatAttributes(path, object) {
         const fileName = path.split('/').pop();
         switch (fileName) {
             case 'agency.txt':
@@ -59,13 +62,13 @@ export class GTFSParser {
                 return {
                     ...object,
                     agency_id: AGENCY_ID,
-                    monday: object.monday === '1',
-                    tuesday: object.tuesday === '1',
-                    wednesday: object.wednesday === '1',
-                    thursday: object.thursday === '1',
-                    friday: object.friday === '1',
-                    saturday: object.saturday === '1',
-                    sunday: object.sunday === '1',
+                    monday: Number(object.monday),
+                    tuesday: Number(object.tuesday),
+                    wednesday: Number(object.wednesday),
+                    thursday: Number(object.thursday),
+                    friday: Number(object.friday),
+                    saturday: Number(object.saturday),
+                    sunday: Number(object.sunday),
                     start_date: this.#fomatDate(object.start_date).getTime(),
                     end_date: this.#fomatDate(object.end_date).getTime(),
                 }
@@ -85,7 +88,7 @@ export class GTFSParser {
                     continuous_pickup: Number(object.continuous_pickup),
                     continuous_drop_off: Number(object.continuous_drop_off),
                     wheelchair_boarding: 0,
-                    night_only: false,
+                    night_only: 0,
                 };
             case 'shapes.txt':
                 return {
@@ -116,8 +119,7 @@ export class GTFSParser {
                     stop_lon: Number(object.stop_lon),
                     location_type: Number(object.location_type),
                     wheelchair_boarding: Number(object.wheelchair_boarding),
-                    stop_shelter: object.stop_abribus === '1',
-                    stop_display: object.stop_display === '1',
+                    stop_shelter: Number(object.stop_abribus),
                 };
             case 'trips.txt':
                 return {
@@ -127,6 +129,28 @@ export class GTFSParser {
                     wheelchair_accessible: Number(object.wheelchair_boarding),
                     bikes_allowed: Number(object.bikes_allowed),
                 }
+        }
+    }
+
+    #convertAttributes(path, objects) {
+        const fileName = path.split('/').pop();
+        switch (fileName) {
+            case 'agency.txt':
+                return GTFSConverter.get(AGENCY_ID).agency(objects);
+            case 'calendar.txt':
+                return GTFSConverter.get(AGENCY_ID).calendar(objects);
+            case 'calendar_dates.txt':
+                return GTFSConverter.get(AGENCY_ID).calendarDates(objects);
+            case 'routes.txt':
+                return GTFSConverter.get(AGENCY_ID).routes(objects);
+            case 'shapes.txt':
+                return GTFSConverter.get(AGENCY_ID).shapes(objects);
+            case 'stop_times.txt':
+                return GTFSConverter.get(AGENCY_ID).times(objects);
+            case 'stops.txt':
+                return GTFSConverter.get(AGENCY_ID).stops(objects);
+            case 'trips.txt':
+                return GTFSConverter.get(AGENCY_ID).trips(objects);
         }
     }
 

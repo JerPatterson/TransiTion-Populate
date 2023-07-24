@@ -56,6 +56,12 @@ export class GTFSFiller {
         console.log('Done');
     }
 
+    async sendShapes() {
+        const shapes = await this.#fileParser.getContent(`${this.#baseFilePath}/shapes.txt`);
+        await this.#sendDataByObj(`shapes/${AGENCY_ID}`, shapes)
+        console.log('Done');
+    }
+
     async #sendDataByObj(route, objects) {
         await Promise.all(objects.map(async (object, index) => {
             const response = await this.#sendData(route, object);
@@ -86,3 +92,5 @@ export class GTFSFiller {
         return new Promise(r => setTimeout(r, 200));
     }
 }
+
+await new GTFSFiller().sendTrips();
