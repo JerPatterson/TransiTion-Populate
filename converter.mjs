@@ -192,6 +192,8 @@ GTFSConverter.set('stm', {
         return trips.map((trip, i) => {
             return {
                 ...trip,
+                bikes_allowed: 2,
+                wheelchair_boarding: 0,
                 trip_headsign: (() => {
                     const headsigns = STM_HEADSIGNS.get(trip.trip_headsign);
                     if (trip.note_fr) {
@@ -218,7 +220,6 @@ GTFSConverter.set('stm', {
                             return bCount - aCount;
                         })[0];
                     } else {
-                        if (i === 65841) console.log(headsigns);
                         return headsigns[0];
                     }
                 })()
