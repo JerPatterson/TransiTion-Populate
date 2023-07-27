@@ -1,35 +1,64 @@
 import fs from 'fs';
-import { GTFSConverter } from './converter.mjs';
 import { AGENCY_ID, LINE_DELIMITER, VALUE_DELIMITER } from './constants.mjs';
 
-export class GTFSParser {
-    async getContent(fileDirectory) {
-        return this.#readFile(fileDirectory);
-    } 
+export class Parser {
+    #basePath = `./assets/${AGENCY_ID}`
 
-    async #readFile(path) {
-        const content = fs.readFileSync(path).toLocaleString();
-
-        const lines = content.split(LINE_DELIMITER);
-        const params = lines[0].split(VALUE_DELIMITER);
-        const values = lines.slice(1, -1);
-
-        params[0] = this.#getFirstParamFromFile(path);
-
-        const valuesFormatted = values.map((value) => {
-            const result = Object();
-            const attributes = value.split(VALUE_DELIMITER);
-            attributes.forEach((value, index) => {
-                result[params[index]] = value;
-            });
-
-            return this.#formatAttributes(path, result);
-        });
-
-        return this.#convertAttributes(path, valuesFormatted);
+    getAgencies() {
+        return this.#readFile(`${this.#basePath}/agency.txt`);
     }
 
-    #getFirstParamFromFile(path) {
+    getCalendarDates() {
+        return this.#readFile(`${this.#basePath}/calendar_dates.txt`);
+    }
+
+    getCalendars() {
+        return this.#readFile(`${this.#basePath}/calendar.txt`);
+    }
+
+    getRoutes() {
+        return this.#readFile(`${this.#basePath}/routes.txt`);
+    }
+
+    getShapes() {
+        return this.#readFile(`${this.#basePath}/shapes.txt`);
+    }
+
+    getStops() {
+        return this.#readFile(`${this.#basePath}/stops.txt`);
+    }
+
+    getTimes() {
+        return this.#readFile(`${this.#basePath}/stop_times.txt`);
+    }
+
+    getTrips() {
+        return this.#readFile(`${this.#basePath}/trips.txt`);
+    }
+
+    #readFile(path) {
+        const lines = this.#getFileLines(path);
+        const params = lines[0].split(VALUE_DELIMITER);
+        params[0] = this.#getFirstParamFromFilePath(path);
+
+        return lines.slice(1, -1)
+            .map((line) => {
+                const result = {};
+
+                const values = line.split(VALUE_DELIMITER);
+                values.forEach((value, index) => {
+                    result[params[index]] = value;
+                });
+
+                return this.#setAttributeTypes(path, result);
+            });
+    }
+
+    #getFileLines(path) {
+        return fs.readFileSync(path).toLocaleString().split(LINE_DELIMITER);
+    }
+
+    #getFirstParamFromFilePath(path) {
         const fileName = path.split('/').pop();
         switch (fileName) {
             case 'agency.txt':
@@ -50,13 +79,13 @@ export class GTFSParser {
         }
     }
 
-    #formatAttributes(path, object) {
+    #setAttributeTypes(path, object) {
         const fileName = path.split('/').pop();
         switch (fileName) {
             case 'agency.txt':
                 return {
                     ...object,
-                    agency_id: object.agency_id.toLowerCase(),
+                    agency_id: AGENCY_ID,
                 };
             case 'calendar.txt':
                 return {
@@ -126,31 +155,9 @@ export class GTFSParser {
                     ...object,
                     agency_id: AGENCY_ID,
                     direction_id: Number(object.direction_id),
-                    wheelchair_accessible: Number(object.wheelchair_boarding),
+                    wheelchair_accessible: Number(object.wheelchair_accessible),
                     bikes_allowed: Number(object.bikes_allowed),
                 }
-        }
-    }
-
-    #convertAttributes(path, objects) {
-        const fileName = path.split('/').pop();
-        switch (fileName) {
-            case 'agency.txt':
-                return GTFSConverter.get(AGENCY_ID).agency(objects);
-            case 'calendar.txt':
-                return GTFSConverter.get(AGENCY_ID).calendar(objects);
-            case 'calendar_dates.txt':
-                return GTFSConverter.get(AGENCY_ID).calendarDates(objects);
-            case 'routes.txt':
-                return GTFSConverter.get(AGENCY_ID).routes(objects);
-            case 'shapes.txt':
-                return GTFSConverter.get(AGENCY_ID).shapes(objects);
-            case 'stop_times.txt':
-                return GTFSConverter.get(AGENCY_ID).times(objects);
-            case 'stops.txt':
-                return GTFSConverter.get(AGENCY_ID).stops(objects);
-            case 'trips.txt':
-                return GTFSConverter.get(AGENCY_ID).trips(objects);
         }
     }
 
