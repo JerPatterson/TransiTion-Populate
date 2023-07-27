@@ -443,3 +443,7 @@ STM_HEADSIGNS.set('176-S', ['Terminus de la Pointe-Sud']);
 STM_HEADSIGNS.set('176-N', ['Station Île-des-Soeurs']);
 STM_HEADSIGNS.set('172-S', ['Île-des-Soeurs']);
 STM_HEADSIGNS.set('172-N', ['Station Île-des-Soeurs']);
+STM_HEADSIGNS.set('56-S', ['Station Crémazie']);
+STM_HEADSIGNS.set('56-N', ['Station Henri-Bourassa']);
+STM_HEADSIGNS.set('444-S', ['Station Radisson']);
+STM_HEADSIGNS.set('444-N', ['Cégep Marie-Victorin']);

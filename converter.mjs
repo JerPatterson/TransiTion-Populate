@@ -1,7 +1,27 @@
 import { AGENCY_ID } from "./constants.mjs";
+import { GTFSParser } from "./gtfs-parser.mjs";
 import { STM_HEADSIGNS } from "./stm.mjs";
 
 export const GTFSConverter = new Map();
+
+const getNetworkAgencyNetworkExtent = async () => {
+    const parser = new GTFSParser();
+    const shapes = await parser.getContent(`./assets/${AGENCY_ID}/shapes.txt`);
+    let minLat = shapes[0].shapes[0].shape_pt_lat;
+    let maxLat = shapes[0].shapes[0].shape_pt_lat;
+    let minLon = shapes[0].shapes[0].shape_pt_lon;
+    let maxLon = shapes[0].shapes[0].shape_pt_lon;
+    shapes.forEach((shapes) => {
+        shapes.shapes.forEach((shape) => {
+            if (minLat > shape.shape_pt_lat) minLat = shape.shape_pt_lat;
+            else if (maxLat < shape.shape_pt_lat) maxLat = shape.shape_pt_lat;
+            if (minLon > shape.shape_pt_lon) minLon = shape.shape_pt_lon;
+            else if (maxLon < shape.shape_pt_lon) maxLon = shape.shape_pt_lon;
+        });
+    });
+
+    return { min_lat: minLat, max_lat: maxLat, min_lon: minLon, max_lon: maxLon };
+}
 
 const defaultShapesConverter = (shapes) => {
     const shapesByShapeId = new Map();
@@ -77,13 +97,14 @@ const stlAccessibleRoutes = [
 ];
 
 GTFSConverter.set('stl', {
-    agency: (agencies) => {
-        return agencies.map((agency) => {
+    agency: async (agencies) => {
+        return Promise.all(agencies.map(async (agency) => {
             return {
                 ...agency,
+                ... (await getNetworkAgencyNetworkExtent()),
                 agency_name: 'Société de transport de Laval'
             }
-        })
+        }));
     },
 
     calendar: (calendar) => calendar,
@@ -113,12 +134,19 @@ GTFSConverter.set('stl', {
     },
 
     stops: (stops) => {
-        return stops.map((stop) => {
+        stops = stops.map((stop) => {
             return {
                 ...stop,
                 stop_id: stop.stop_id.replace(stlPrefix, '').replace('CP', ''),
             }
-        })
+        });
+
+        const uniqueStopIds = new Set();
+        return stops.filter((stop) => {
+            const value = !uniqueStopIds.has(stop.stop_id);
+            uniqueStopIds.add(stop.stop_id);
+            return value;
+        });
     },
 
     times: (times) => {
@@ -153,7 +181,15 @@ const stmExpressRouteFilter = (routeId) => routeId.length === 3 && routeId[0] ==
 const stmNavetteRouteFilter = (routeId) => routeId.length === 3 && ['7', '8', '9'].includes(routeId[0]);
 
 GTFSConverter.set('stm', {
-    agency: (agencies) => agencies,
+    agency: async (agencies) => {
+        return Promise.all(agencies.map(async (agency) => {
+            return {
+                ...agency,
+                ... (await getNetworkAgencyNetworkExtent()),
+            }
+        }));
+    },
+
     calendar: (calendar) => calendar,
     calendarDates: (calendarDates) => calendarDates,
     

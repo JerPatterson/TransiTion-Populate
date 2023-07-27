@@ -1,3 +1,3 @@
-export const AGENCY_ID = 'stm';
+export const AGENCY_ID = 'stl';
 export const VALUE_DELIMITER = ',';
-export const LINE_DELIMITER = '\n';
+export const LINE_DELIMITER = '\r\n';

@@ -32,9 +32,9 @@ export class GTFSLinker {
             const stopIdsFromTrip = stopIdsByTripId.get(trip.trip_id);
             if (stopIdsByRouteId.has(routeId)) {
                 const stopIdsFromRoute = stopIdsByRouteId.get(routeId);
-                stopIdsByRouteId.set(routeId, new Set([...stopIdsFromRoute, ...stopIdsFromTrip]));
+                if(stopIdsFromTrip) stopIdsByRouteId.set(routeId, new Set([...stopIdsFromRoute, ...stopIdsFromTrip]));
             } else {
-                stopIdsByRouteId.set(routeId, new Set([...stopIdsFromTrip]));
+                if(stopIdsFromTrip) stopIdsByRouteId.set(routeId, new Set([...stopIdsFromTrip]));
             }
         });
 

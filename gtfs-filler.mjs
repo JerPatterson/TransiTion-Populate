@@ -1,15 +1,17 @@
 import fetch from "node-fetch";
 import { AGENCY_ID } from "./constants.mjs";
 import { GTFSParser } from "./gtfs-parser.mjs";
+import { GTFSLinker } from "./gtfs-linker.mjs";
 
 export class GTFSFiller {
     #fileParser = new GTFSParser();
+    #fileLinker = new GTFSLinker();
     #baseFilePath = `./assets/${AGENCY_ID}`;
     #serverURL = 'http://127.0.0.1:3000';
 
     async sendAgencies() {
         const agencies = await this.#fileParser.getContent(`${this.#baseFilePath}/agency.txt`);
-        await this.#sendDataByObj(`agencies/${AGENCY_ID}`, agencies);
+        await this.#sendDataByObj(`agencies`, agencies);
         console.log('Done');
     }
 
@@ -26,15 +28,16 @@ export class GTFSFiller {
     }
 
     async sendRoutes() {
-        const routes = await this.#fileParser.getContent(`${this.#baseFilePath}/routes.txt`);
+        const stopIdsByRouteId = await this.#fileLinker.getStopIdsByRouteId();
+        const routes = (await this.#fileParser.getContent(`${this.#baseFilePath}/routes.txt`))
+            .map((route) => {
+                return {
+                    ...route,
+                    stop_ids: stopIdsByRouteId.has(route.route_id) ? [...stopIdsByRouteId.get(route.route_id)] : [],
+                };
+            });
+        console.log('Sending');
         await this.#sendDataByObj(`routes/${AGENCY_ID}`, routes);
-        console.log('Done');
-    }
-
-    async sendShapes() {
-        const chunkSize = 500;
-        const shapes = await this.#fileParser.getContent(`${this.#baseFilePath}/shapes.txt`);
-        await this.#sendDataByChunk(`shapes/${AGENCY_ID}`, shapes, chunkSize);
         console.log('Done');
     }
 
@@ -45,7 +48,15 @@ export class GTFSFiller {
     }
 
     async sendStops() {
-        const stops = await this.#fileParser.getContent(`${this.#baseFilePath}/stops.txt`);
+        const routeIdsByStopId = await this.#fileLinker.getRouteIdsByStopId();
+        const stops = (await this.#fileParser.getContent(`${this.#baseFilePath}/stops.txt`))
+            .map((stop) => {
+                return {
+                    ...stop,
+                    route_ids: routeIdsByStopId.has(stop.stop_id) ? [...routeIdsByStopId.get(stop.stop_id)] : [],
+                };
+            });
+        console.log('Sending');
         await this.#sendDataByChunk(`stops/${AGENCY_ID}`, stops);
         console.log('Done');
     }
@@ -75,7 +86,7 @@ export class GTFSFiller {
         for (let i = 0; i < objects.length / chunkSize; ++i) {
             let chunk = objects.slice(i * chunkSize, Math.min((i + 1) * chunkSize), objects.length);
             let response = await this.#sendData(route, chunk);
-            if (!response.ok) console.log(`${index} -> ${response.status}`);
+            if (!response.ok) console.log(`${i} -> ${response.status}`);
             await this.#delay();
         }
     }
@@ -93,4 +104,12 @@ export class GTFSFiller {
     }
 }
 
-await new GTFSFiller().sendTrips();
+// await new GTFSFiller().sendAgencies();
+// await new GTFSFiller().sendCalendars();
+// await new GTFSFiller().sendCalendarDates();
+// await new GTFSFiller().sendRoutes();
+// await new GTFSFiller().sendStops();
+// await new GTFSFiller().sendTrips();
+// await new GTFSFiller().sendTimes();
+
+// await new GTFSFiller().sendShapes();
