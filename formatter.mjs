@@ -45,7 +45,7 @@ export class Formatter {
         return this.#fomatShapes(shapes);
     }
 
-    getStops(stops) {
+    getStops() {
         const stops = this.#parser.getStops();
         const routeIdsByStopId = this.#linker.getRouteIdsByStopId();
         return stops.map((stop) => {

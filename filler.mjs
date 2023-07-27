@@ -62,17 +62,15 @@ export class Filler {
 
 
     async #sendDataByObj(route, objects) {
-        const errorReport = SKIP_LINES;
+        let errorReport = SKIP_LINES;
         const lastIndex = objects.length - 1;
 
         await Promise.all(objects.map(async (object, index) => {
             const response = await this.#sendData(route, object);
-            if (response.ok) {
-                console.log(`${index}/${lastIndex} -> OK\n`);
-            } else {
-                const errorText = `${index}/${lastIndex} -> ${response.status} : ${response.statusText}\n`;
+            if (!response.ok) {
+                const errorText = `${index}/${lastIndex} -> ${response.status} : ${response.statusText}`;
+                errorReport += errorReport + '\n';
                 console.log(errorText);
-                errorReport += errorText;
             }
 
             return response;
@@ -85,19 +83,19 @@ export class Filler {
     async #sendDataByChunk(route, objects, chunkSize) {
         if (!chunkSize) chunkSize = 300;
 
-        const errorReport = SKIP_LINES;
-        const lastIndex = objects.length / chunkSize - 1;
+        let errorReport = SKIP_LINES;
+        const lastIndex = Math.ceil(objects.length / chunkSize) - 1;
 
         for (let i = 0; i <= lastIndex; ++i) {
             let chunk = objects.slice(i * chunkSize, Math.min((i + 1) * chunkSize), objects.length);
             let response = await this.#sendData(route, chunk);
 
             if (response.ok) {
-                console.log(`${index}/${lastIndex} -> OK\n`);
+                console.log(`${i}/${lastIndex} -> OK`);
             } else {
-                const errorText = `${index}/${lastIndex} -> ${response.status} : ${response.statusText}\n`;
+                const errorText = `${i}/${lastIndex} -> ${response.status} : ${response.statusText}`;
+                errorReport += errorReport + '\n';
                 console.log(errorText);
-                errorReport += errorText;
             }
 
             await this.#delay();
