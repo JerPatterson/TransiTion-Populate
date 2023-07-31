@@ -38,6 +38,7 @@ export class Filler {
 
     async sendShapes() {
         const shapes = this.#formatter.getShapes();
+        console.log(shapes.length);
         console.log('\n\nSending shapes.txt...')
         await this.#sendDataByObj(`shapes/${AGENCY_ID}`, shapes)
     }
@@ -57,7 +58,8 @@ export class Filler {
     async sendTrips() {
         const trips = this.#formatter.getTrips();
         console.log('\n\nSending trips.txt...')
-        await this.#sendDataByChunk(`trips/${AGENCY_ID}`, trips);
+        console.log(trips[9465]);
+        // await this.#sendDataByChunk(`trips/${AGENCY_ID}`, trips);
     }
 
 
@@ -67,7 +69,9 @@ export class Filler {
 
         await Promise.all(objects.map(async (object, index) => {
             const response = await this.#sendData(route, object);
-            if (!response.ok) {
+            if (response.ok) {
+                console.log(`${index}/${lastIndex} -> OK`);
+            } else {
                 const errorText = `${index}/${lastIndex} -> ${response.status} : ${response.statusText}`;
                 errorReport += errorReport + '\n';
                 console.log(errorText);

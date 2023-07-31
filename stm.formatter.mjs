@@ -15,7 +15,7 @@ export class STMFormatter extends Formatter {
                 continuous_pickup: 1,
                 continuous_drop_off: 1,
                 route_color: this.#getRouteColor(route),
-                rout_text_color: this.#getRouteTextColor(route),
+                route_text_color: this.#getRouteTextColor(route),
                 night_only: this.#isNightRoute(route.route_id) ? 1 : 0,
             }
         });
@@ -24,13 +24,14 @@ export class STMFormatter extends Formatter {
     getTrips() {
         const trips = super.getTrips();
 
-        return trips.map((trip) => {
+        return trips.map((trip, i) => {
             return {
                 ...trip,
                 bikes_allowed: 2,
                 trip_headsign: this.#updateTripHeadsign(
                     trip.trip_headsign,
-                    trip.note_fr
+                    trip.note_fr,
+                    i,
                 ),
             }
         });
@@ -68,7 +69,7 @@ export class STMFormatter extends Formatter {
             const wantedWords = note.toLowerCase().split(' ');
             headsigns = headsigns.sort((a, b) => this.#getWantedWordsDifference(wantedWords, a, b));
         }
-        
+
         return headsigns.shift();
     }
 
@@ -77,8 +78,8 @@ export class STMFormatter extends Formatter {
     }
 
     #getWantedWordsDifference(wantedWords, sentenceA, sentenceB) {
-        return this.#getWantedWordsCount(wantedWords, sentenceA)
-            - this.#getWantedWordsCount(wantedWords, sentenceB);
+        return this.#getWantedWordsCount(wantedWords, sentenceB)
+            - this.#getWantedWordsCount(wantedWords, sentenceA);
     }
 
     #getWantedWordsCount(wantedWords, sentence) {

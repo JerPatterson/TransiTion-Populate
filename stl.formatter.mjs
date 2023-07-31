@@ -72,7 +72,7 @@ export class STLFormatter extends Formatter {
                 trip_id: trip.trip_id.replace(PREFIX, ''),
                 route_id: trip.route_id.replace(PREFIX, ''),
                 shape_id: trip.shape_id.replace(PREFIX, ''),
-                direction_id: this.#getDirectionId(trip.route_id[-1]),
+                direction_id: this.#getDirectionId(trip.route_id),
                 bikes_allowed: 1,
             }
         });
@@ -96,6 +96,6 @@ export class STLFormatter extends Formatter {
     }
 
     #getDirectionId(routeId) {
-        return ['S', 'O'].includes(routeId[-1]) ? 1 : 0
+        return ['S', 'O'].includes(routeId.split()[-1]) ? 1 : 0
     }
 }
