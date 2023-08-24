@@ -38,7 +38,6 @@ export class Filler {
 
     async sendShapes() {
         const shapes = this.#formatter.getShapes();
-        console.log(shapes.length);
         console.log('\n\nSending shapes.txt...')
         await this.#sendDataByObj(`shapes/${AGENCY_ID}`, shapes)
     }
@@ -57,9 +56,8 @@ export class Filler {
 
     async sendTrips() {
         const trips = this.#formatter.getTrips();
-        console.log('\n\nSending trips.txt...')
-        console.log(trips[9465]);
-        // await this.#sendDataByChunk(`trips/${AGENCY_ID}`, trips);
+        console.log('\n\nSending trips.txt...');
+        await this.#sendDataByChunk(`trips/${AGENCY_ID}`, trips);
     }
 
 

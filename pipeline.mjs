@@ -15,14 +15,14 @@ class Pipeline {
         console.log(`Going to populate the DB with '${AGENCY_ID}' static GTFS data...`);
         await this.#delay();
 
-        // await this.#filler.sendAgencies();
-        // await this.#filler.sendCalendars();
-        // await this.#filler.sendCalendarDates();
-        // await this.#filler.sendRoutes();
-        // await this.#filler.sendStops();
-        // await this.#filler.sendShapes();
+        await this.#filler.sendAgencies();
+        await this.#filler.sendCalendars();
+        await this.#filler.sendCalendarDates();
+        await this.#filler.sendRoutes();
+        await this.#filler.sendStops();
+        await this.#filler.sendShapes();
         await this.#filler.sendTrips();
-        // await this.#filler.sendTimes();
+        await this.#filler.sendTimes();
     }
 
     #getFormatter() {

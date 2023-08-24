@@ -6,6 +6,17 @@ const EXPRESS_ROUTE_COLOR = 'd92f80';
 const NAVETTE_ROUTE_COLOR = '7b287c';
 
 export class STMFormatter extends Formatter {
+    getAgencies() {
+        const agencies = super.getAgencies();
+
+        return agencies.map((agency) => {
+            return {
+                ...agency,
+                agency_name: 'Société de transport de Montréal',
+            }
+        })
+    }
+
     getRoutes() {
         const routes = super.getRoutes();
 

@@ -118,7 +118,7 @@ STM_HEADSIGNS.set('72-E', ['Station Côte-Vertu']);
 STM_HEADSIGNS.set('72-O', ['Pointe-Claire', 'Terminus Fairview']);
 STM_HEADSIGNS.set('73-E', ['Station du Collège']);
 STM_HEADSIGNS.set('73-O', ['Parc industriel Saint-Laurent']);
-STM_HEADSIGNS.set('74-S', ['Pointe-Saint-Charles', 'Pointe-Saint-Charles via Peel / Bridge']);
+STM_HEADSIGNS.set('74-S', ['Pointe-Saint-Charles', 'Pointe-Saint-Charles via Peel / Bridge', 'Griffintown (Robert-Bourassa et Ottawa)']);
 STM_HEADSIGNS.set('74-N', ['Station Bonaventure']);
 STM_HEADSIGNS.set('75-N', ['Station Bonaventure']);
 STM_HEADSIGNS.set('75-S', ['Station Square-Victoria-OACI']);

@@ -1,6 +1,6 @@
 import { Formatter } from './formatter.mjs';
 
-const PREFIX = 'JUIN23';
+const PREFIX = 'AOUT23';
 const STOP_PREFIX = 'CP';
 const NIGHT_ROUTE_IDS = ['2E', '2O', '345S', '345N'];
 const ACCESSIBLE_ROUTE_IDS = [
@@ -11,6 +11,17 @@ const ACCESSIBLE_ROUTE_IDS = [
 ];
 
 export class STLFormatter extends Formatter {
+    getAgencies() {
+        const agencies = super.getAgencies();
+
+        return agencies.map((agency) => {
+            return {
+                ...agency,
+                agency_name: 'Société de transport de Laval',
+            }
+        })
+    }
+
     getRoutes() {
         const routes = super.getRoutes();
 
@@ -23,6 +34,7 @@ export class STLFormatter extends Formatter {
                 continuous_drop_off: 1,
                 night_only: this.#isNightRoute(routeId) ? 1 : 0,
                 wheelchair_boarding: this.#isAccessibleRoute(routeId) ? 1 : 2,
+                stop_ids: route.stop_ids.map((stopId) => stopId.replace(PREFIX, '').stopId.replace(STOP_PREFIX, '')),
             }
         });
     }
@@ -46,6 +58,7 @@ export class STLFormatter extends Formatter {
                 return {
                     ...stop,
                     stop_id: stop.stop_id.replace(PREFIX, '').replace(STOP_PREFIX, ''),
+                    route_ids: stop.route_ids.map((routeId) => routeId.replace(PREFIX, '')),
                 }
             })
         );

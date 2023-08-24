@@ -51,6 +51,7 @@ export class Formatter {
         return stops.map((stop) => {
             return {
                 ...stop,
+                location_type: (stop?.location_type ? Number(stop.location_type) : 0),
                 route_ids: routeIdsByStopId.has(stop.stop_id) ?
                     [...routeIdsByStopId.get(stop.stop_id)] : [],
             };
